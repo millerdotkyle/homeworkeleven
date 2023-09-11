@@ -5,26 +5,40 @@ const { Tag, Product, ProductTag } = require("../../models");
 
 router.get("/", (req, res) => {
   // find all tags
+    // be sure to include its associated Product data
   Tag.findAll({ include: [{ model: Product }] }).then((tagData) => {
     res.json(tagData);
   });
-  // be sure to include its associated Product data
+
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   // find a single tag by its `id`
-  Tag.findByPk()
-  // be sure to include its associated Product data
+    // be sure to include its associated Product data
+
+  const tagData = await Tag.findByPk(req.params.id, {
+    include: [{model: Product}]
+  });
+
+  res.json(tagData);
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   // create a new tag
-  Tag.create(req.body)
+  const tagData = await Tag.create({
+    tag_name: req.body.tag_name
+  });
+  res.status(200).json(tagData);
 });
 
 router.put("/:id", (req, res) => {
   // update a tag's name by its `id` value
-  Tag.update
+  Tag.update(
+    {tag_name: req.body.tag_name},
+    {where: {
+      id: req.params.id}
+    }
+    )
 });
 
 router.delete("/:id", (req, res) => {
