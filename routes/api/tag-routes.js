@@ -12,23 +12,24 @@ router.get("/", (req, res) => {
 
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", (req, res) => {
   // find a single tag by its `id`
     // be sure to include its associated Product data
 
-  const tagData = await Tag.findByPk(req.params.id, {
+  Tag.findByPk(req.params.id, {
     include: [{model: Product}]
+  }).then((tagData)=> {
+    res.status(200).json(tagData);
   });
-
-  res.json(tagData);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   // create a new tag
-  const tagData = await Tag.create({
+  Tag.create({
     tag_name: req.body.tag_name
-  });
-  res.status(200).json(tagData);
+  }).then((tagData)=> {
+    res.status(200).json(tagData)
+  })
 });
 
 router.put("/:id", (req, res) => {
@@ -38,7 +39,9 @@ router.put("/:id", (req, res) => {
     {where: {
       id: req.params.id}
     }
-    )
+    ).then((tagData)=> {
+      res.status(200).json(tagData)
+    })
 });
 
 router.delete("/:id", (req, res) => {
@@ -47,7 +50,9 @@ router.delete("/:id", (req, res) => {
     where: {
       id: req.params.id,
     },
-  });
+  }).then(()=> {
+    res.status(200).statusMessage('Deleted!')
+  })
 });
 
 module.exports = router;
