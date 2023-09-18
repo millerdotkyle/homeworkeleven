@@ -41,22 +41,14 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  try {
-    const catData = Category.destroy({
+
+    Category.destroy({
       where: {
         id: req.params.id,
       },
-    });
-
-    if (!catData) {
-      res.status(404).json({ message: 'No Category found with that id!' });
-      return;
-    }
-
-    res.status(200).json(catData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+    }).then(()=> {
+      res.status(200).statusMessage('Deleted!')
+    })
 });
 
 module.exports = router;
